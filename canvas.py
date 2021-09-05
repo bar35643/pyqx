@@ -34,7 +34,8 @@ class Canvas(QtWidgets.QLabel):
         self.signals.resizeCanvas.connect(self.resize)
         self.signals.updateTool.connect(self.applySelection)
         self.signals.updateTool.connect(self.changeCursor)
-        self.signals.transparentSelection.connect(self.makeSelectionTransparent)
+        self.signals.transparentSelection.connect(
+            self.makeSelectionTransparent)
         self.signals.imageRemoved.connect(self.setNewIndex)
 
         self.signals.cutImage.connect(self.cutImage)
@@ -47,7 +48,8 @@ class Canvas(QtWidgets.QLabel):
 
         self.index = index
 
-        self.setPixmap(QtGui.QPixmap.fromImage(self.context.getImagePos(index).image))
+        self.setPixmap(QtGui.QPixmap.fromImage(
+            self.context.getImagePos(index).image))
 
         self.drawing = False
         self.selecting = False
@@ -140,9 +142,11 @@ class Canvas(QtWidgets.QLabel):
             self.lastPoint = QtCore.QPoint(x, y)
             if self.drawing:
                 self.drawing = False
-                self.image().image = QtGui.QImage(self.image().history[self.image().posHistory])
+                self.image().image = QtGui.QImage(
+                    self.image().history[self.image().posHistory])
             elif event.button() == Qt.LeftButton or event.button() == Qt.RightButton:
-                color = self.context.primaryColor if event.button() == Qt.LeftButton else self.context.secondaryColor
+                color = self.context.primaryColor if event.button(
+                ) == Qt.LeftButton else self.context.secondaryColor
                 size = self.context.pencilSize
                 if event.button() == Qt.RightButton and self.context.secondaryColorEraser:
                     color = self.image().bgColor
@@ -162,16 +166,18 @@ class Canvas(QtWidgets.QLabel):
         # Pipeta de color
         elif self.context.currentTool == Pixeler.Tools.ColorPicker:
             if event.button() == Qt.LeftButton:
-                self.context.changePrimaryColor(QtGui.QColor(self.context.currentQImage().pixel(QtCore.QPoint(x, y))))
+                self.context.changePrimaryColor(QtGui.QColor(
+                    self.context.currentQImage().pixel(QtCore.QPoint(x, y))))
             elif event.button() == Qt.RightButton:
-                self.context.changeSecondaryColor(QtGui.QColor(self.context.currentQImage().pixel(QtCore.QPoint(x, y))))
+                self.context.changeSecondaryColor(QtGui.QColor(
+                    self.context.currentQImage().pixel(QtCore.QPoint(x, y))))
             self.signals.updateColor.emit()
 
         # Cubo
         elif self.context.currentTool == Pixeler.Tools.Fill:
             if event.button() == Qt.LeftButton:
                 self.fillImageFaster((x, y), self.context.primaryColor, self.context.currentQImage().pixel(x, y),
-                               self.context.currentQImage())
+                                     self.context.currentQImage())
             elif event.button() == Qt.RightButton:
                 self.fillImage((x, y), self.context.secondaryColor, self.context.currentQImage().pixel(x, y),
                                self.context.currentQImage())
@@ -181,7 +187,8 @@ class Canvas(QtWidgets.QLabel):
         # Degradado
         elif self.context.currentTool == Pixeler.Tools.Gradient:
             if event.button() == Qt.LeftButton:
-                self.context.gradient = Selection(QtCore.QPoint(x, y), self.context, self)
+                self.context.gradient = Selection(
+                    QtCore.QPoint(x, y), self.context, self)
 
         # Mover canvas
         if event.button() == Qt.MiddleButton:
@@ -207,7 +214,8 @@ class Canvas(QtWidgets.QLabel):
             if event.buttons() == Qt.LeftButton:
                 if not self.image().selection.finished:
                     self.selecting = True
-                    self.resizeSelection(self.image().selection, event.pos().x(), event.pos().y())
+                    self.resizeSelection(
+                        self.image().selection, event.pos().x(), event.pos().y())
                 if self.image().selection.moving:
                     self.moveSelection(event.pos().x(), event.pos().y())
 
@@ -215,14 +223,16 @@ class Canvas(QtWidgets.QLabel):
         elif self.context.currentTool == Pixeler.Tools.Pencil:
             endPoint = QtCore.QPoint(x, y)
             if event.buttons() == Qt.LeftButton and self.drawing:
-                self.drawLineTo(QtCore.QPoint(x, y), self.context.primaryColor, self.context.pencilSize)
+                self.drawLineTo(QtCore.QPoint(
+                    x, y), self.context.primaryColor, self.context.pencilSize)
                 self.signals.updateCanvas.emit()
                 self.lastPoint = QtCore.QPoint(endPoint)
             elif event.buttons() == Qt.RightButton and self.drawing:
                 color = self.context.secondaryColor
                 if self.context.secondaryColorEraser:
                     color = self.image().bgColor
-                self.drawLineTo(QtCore.QPoint(x, y), color, self.context.pencilSize)
+                self.drawLineTo(QtCore.QPoint(x, y), color,
+                                self.context.pencilSize)
                 self.signals.updateCanvas.emit()
                 self.lastPoint = QtCore.QPoint(endPoint)
 
@@ -230,7 +240,8 @@ class Canvas(QtWidgets.QLabel):
         elif self.context.currentTool == Pixeler.Tools.Eraser:
             if event.buttons() == Qt.LeftButton or event.buttons() == Qt.RightButton:
                 endPoint = QtCore.QPoint(x, y)
-                self.drawLineTo(QtCore.QPoint(x, y), self.image().bgColor, self.context.eraserSize)
+                self.drawLineTo(QtCore.QPoint(x, y),
+                                self.image().bgColor, self.context.eraserSize)
                 self.signals.updateCanvas.emit()
                 self.lastPoint = QtCore.QPoint(endPoint)
 
@@ -239,7 +250,8 @@ class Canvas(QtWidgets.QLabel):
             if event.buttons() == Qt.LeftButton:
                 if self.context.gradient and not self.context.gradient.finished:
                     self.selecting = True
-                    self.resizeSelection(self.context.gradient, event.pos().x(), event.pos().y())
+                    self.resizeSelection(
+                        self.context.gradient, event.pos().x(), event.pos().y())
 
         if event.buttons() == Qt.MiddleButton:
             self.move(self.mapToParent(event.pos() - self.grabPoint))
@@ -252,7 +264,8 @@ class Canvas(QtWidgets.QLabel):
 			sb.maximum() - sb.minimum() -> self.mapToParent(self.pos().x()) - self.frameGeometry().width()
 			sb.value() -> x
 			"""
-            sb.setValue(self.mapToParent(self.pos()).x() * sb.maximum() / float(-self.width() + self.parent.width()))
+            sb.setValue(self.mapToParent(self.pos()).x() *
+                        sb.maximum() / float(-self.width() + self.parent.width()))
 
         self.update()
 
@@ -279,7 +292,8 @@ class Canvas(QtWidgets.QLabel):
                         y1 = (y - size / 2 + i + 1) * self.image().zoom - 1
                         painter.drawLine(x0, y0, x0, y1)
                     if j == size - 1 or not m[i][j + 1]:
-                        x0 = (x + size / 2 + (j - size) + 2) * self.image().zoom - 1
+                        x0 = (x + size / 2 + (j - size) + 2) * \
+                            self.image().zoom - 1
                         y0 = (y - size / 2 + i) * self.image().zoom
                         y1 = (y - size / 2 + i + 1) * self.image().zoom - 1
                         painter.drawLine(x0, y0, x0, y1)
@@ -289,9 +303,12 @@ class Canvas(QtWidgets.QLabel):
                         y0 = (y - size / 2 + i) * self.image().zoom
                         painter.drawLine(x0, y0, x1, y0)
                     if i == size - 1 or not m[i + 1][j]:
-                        x0 = (x + size / 2 + (j - size) + 1) * self.image().zoom
-                        x1 = (x + size / 2 + (j - size) + 2) * self.image().zoom - 1
-                        y0 = (y + size / 2 + (i - size) + 2) * self.image().zoom - 1
+                        x0 = (x + size / 2 + (j - size) + 1) * \
+                            self.image().zoom
+                        x1 = (x + size / 2 + (j - size) + 2) * \
+                            self.image().zoom - 1
+                        y0 = (y + size / 2 + (i - size) + 2) * \
+                            self.image().zoom - 1
                         painter.drawLine(x0, y0, x1, y0)
 
     def mouseReleaseEvent(self, event):
@@ -311,12 +328,16 @@ class Canvas(QtWidgets.QLabel):
                 self.image().selection.originTopLeft = QtCore.QPoint(self.image().selection.rect.x(),
                                                                      self.image().selection.rect.y())
                 self.image().selection.finished = True
-                self.image().selection.image = self.context.currentQImage().copy(self.image().selection.rect)
-                self.makeSelectionTransparent(self.context.transparentSelection)
+                self.image().selection.image = self.context.currentQImage().copy(
+                    self.image().selection.rect)
+                self.makeSelectionTransparent(
+                    self.context.transparentSelection)
                 print(self.image().selection.image)
                 painter = QtGui.QPainter(self.context.currentQImage())
-                painter.setCompositionMode(QtGui.QPainter.CompositionMode_Source)
-                painter.fillRect(self.image().selection.rect, self.image().bgColor)
+                painter.setCompositionMode(
+                    QtGui.QPainter.CompositionMode_Source)
+                painter.fillRect(self.image().selection.rect,
+                                 self.image().bgColor)
             else:
                 if self.image().selection != None and self.image().selection.finished:
                     print("Moved selection")
@@ -357,12 +378,14 @@ class Canvas(QtWidgets.QLabel):
                 self.context.gradient.originTopLeft = QtCore.QPoint(self.context.gradient.rect.x(),
                                                                     self.context.gradient.rect.y())
                 self.context.gradient.finished = True
-                self.context.gradient.image = self.context.currentQImage().copy(self.context.gradient.rect)
+                self.context.gradient.image = self.context.currentQImage().copy(
+                    self.context.gradient.rect)
                 self.context.gradient.hide()
                 self.context.gradient = None
                 # OPERACIONES DE PINTADO AQUí ABAJO
                 painter = QtGui.QPainter(self.context.currentQImage())
-                painter.setCompositionMode(QtGui.QPainter.CompositionMode_Source)
+                painter.setCompositionMode(
+                    QtGui.QPainter.CompositionMode_Source)
                 # painter.fillRect(x1,y1,x2,y2, self.image().bgColor)
                 if self.context.DegState == 2:
                     if self.context.DegDir == 'H':
@@ -391,7 +414,8 @@ class Canvas(QtWidgets.QLabel):
 
         # Transparency
         if self.image().bgColor == QtGui.QColor(0, 0, 0, 0):
-            painter.fillRect(self.rect(), QtGui.QBrush(QtGui.QImage("images/transparent.png")))
+            painter.fillRect(self.rect(), QtGui.QBrush(
+                QtGui.QImage("images/transparent.png")))
 
         # Image
         painter.drawImage(self.rect(), self.context.currentQImage())
@@ -417,9 +441,11 @@ class Canvas(QtWidgets.QLabel):
             w = self.context.currentQImage().width()
             h = self.context.currentQImage().height()
             for i in range(w)[1:]:
-                painter.drawLine(i * self.image().zoom - 1, 0, i * self.image().zoom - 1, h * self.image().zoom)
+                painter.drawLine(i * self.image().zoom - 1, 0,
+                                 i * self.image().zoom - 1, h * self.image().zoom)
             for i in range(h)[1:]:
-                painter.drawLine(0, i * self.image().zoom - 1, w * self.image().zoom, i * self.image().zoom - 1)
+                painter.drawLine(0, i * self.image().zoom - 1,
+                                 w * self.image().zoom, i * self.image().zoom - 1)
 
         # Matrix Grid
         if self.context.matrixGrid and self.image().zoom >= 3:
@@ -428,15 +454,19 @@ class Canvas(QtWidgets.QLabel):
             h = self.context.currentQImage().height()
             for i in range(w)[1:]:
                 if i % self.context.matrixGridWidth == 0:
-                    painter.drawLine(i * self.image().zoom, 0, i * self.image().zoom, h * self.image().zoom)
+                    painter.drawLine(i * self.image().zoom, 0,
+                                     i * self.image().zoom, h * self.image().zoom)
             for i in range(h)[1:]:
                 if i % self.context.matrixGridHeight == 0:
-                    painter.drawLine(0, i * self.image().zoom, w * self.image().zoom, i * self.image().zoom)
+                    painter.drawLine(0, i * self.image().zoom,
+                                     w * self.image().zoom, i * self.image().zoom)
 
         if self.context.currentTool == Pixeler.Tools.Pencil or self.context.currentTool == Pixeler.Tools.Eraser:
             # Draw ToolHint
-            xcursor = self.mapFromGlobal(QtGui.QCursor().pos()).x() / self.image().zoom
-            ycursor = self.mapFromGlobal(QtGui.QCursor().pos()).y() / self.image().zoom
+            xcursor = self.mapFromGlobal(
+                QtGui.QCursor().pos()).x() / self.image().zoom
+            ycursor = self.mapFromGlobal(
+                QtGui.QCursor().pos()).y() / self.image().zoom
             self.drawToolHint(xcursor, ycursor)
 
     def makeSelectionTransparent(self, x):
@@ -450,7 +480,8 @@ class Canvas(QtWidgets.QLabel):
                 toColor = self.image().bgColor
 
             image = self.image().selection.image
-            mask = QtGui.QPixmap.fromImage(image).createMaskFromColor(fromColor, QtCore.Qt.MaskOutColor)
+            mask = QtGui.QPixmap.fromImage(image).createMaskFromColor(
+                fromColor, QtCore.Qt.MaskOutColor)
             painter = QtGui.QPainter(image)
             painter.setPen(toColor)
             painter.setCompositionMode(QtGui.QPainter.CompositionMode_Source)
@@ -512,7 +543,8 @@ class Canvas(QtWidgets.QLabel):
         if self.image().selection != None:
             print("Applying selection")
             painter = QtGui.QPainter(self.image().image)
-            painter.drawImage(self.image().selection.rect.topLeft(), self.image().selection.image)
+            painter.drawImage(
+                self.image().selection.rect.topLeft(), self.image().selection.image)
             if self.image().selection.originTopLeft != self.image().selection.rect.topLeft():
                 self.image().addHistoryStep()
             self.signals.updateCanvas.emit()
@@ -539,7 +571,8 @@ class Canvas(QtWidgets.QLabel):
 
     def pasteImage(self):
 
-        print("imagePos: ", self.context.imagePos, ", self.index: ", self.index)
+        print("imagePos: ", self.context.imagePos,
+              ", self.index: ", self.index)
         if self.context.imagePos == self.index:  # Pegar sólo si este Canvas es el actual
             print("Pasting image")
             self.signals.autoUpdateTool.emit(0)
@@ -580,9 +613,11 @@ class Canvas(QtWidgets.QLabel):
         image.save(buffer, "PNG")
 
         pil_im = Image.open(io.BytesIO(buffer.data()))
-        ImageDraw.floodfill(pil_im, begin, (paint.red(), paint.green(), paint.blue()))
+        ImageDraw.floodfill(pil_im, begin, (paint.red(),
+                            paint.green(), paint.blue()))
 
-        self.image().image = QtGui.QImage(pil_im.convert("RGB").tobytes("raw", "RGB"), pil_im.size[0], pil_im.size[1], QtGui.QImage.Format_RGB888)
+        self.image().image = QtGui.QImage(pil_im.convert("RGB").tobytes("raw", "RGB"),
+                                          pil_im.size[0], pil_im.size[1], QtGui.QImage.Format_RGB888)
         self.update()
 
     def fillImage(self, begin, paint, current, imagen):
@@ -657,7 +692,8 @@ class Canvas(QtWidgets.QLabel):
 
                 tmp_c = QtGui.QColor(R, G, B, alpha)
                 # print "changed color"
-                self.context.currentQImage().setPixel(pi[0], pi[1] + i * dy, tmp_c.rgba())
+                self.context.currentQImage().setPixel(
+                    pi[0], pi[1] + i * dy, tmp_c.rgba())
 
             return 0
 
@@ -693,7 +729,8 @@ class Canvas(QtWidgets.QLabel):
                 # print R,G,B
 
                 tmp_c = QtGui.QColor(R, G, B, alpha)
-                self.context.currentQImage().setPixel(pi[0] + i * dx, pi[1], tmp_c.rgba())
+                self.context.currentQImage().setPixel(
+                    pi[0] + i * dx, pi[1], tmp_c.rgba())
             return 0
 
         else:
@@ -719,7 +756,8 @@ class Canvas(QtWidgets.QLabel):
             for i in range(0, abs(Var_y) + 1):
                 color.setAlpha(255 - da * i)
                 # print "changed color"
-                self.context.currentQImage().setPixel(pi[0], pi[1] + i * dy, color.rgba())
+                self.context.currentQImage().setPixel(
+                    pi[0], pi[1] + i * dy, color.rgba())
 
             return 0
 
@@ -738,7 +776,8 @@ class Canvas(QtWidgets.QLabel):
 
             for i in range(0, abs(Var_x) + 1):
                 color.setAlpha(255 - da * i)
-                self.context.currentQImage().setPixel(pi[0] + i * dx, pi[1], color.rgba())
+                self.context.currentQImage().setPixel(
+                    pi[0] + i * dx, pi[1], color.rgba())
 
             return 0
 
@@ -755,11 +794,14 @@ class Canvas(QtWidgets.QLabel):
             selection.setGeometry(selection.origin.x(), selection.origin.y(), x - selection.origin.x() + 1,
                                   y - selection.origin.y() + 1)
         elif x < selection.origin.x() and y >= selection.origin.y():
-            selection.setGeometry(x, selection.origin.y(), selection.origin.x() - x + 1, y - selection.origin.y() + 1)
+            selection.setGeometry(x, selection.origin.y(
+            ), selection.origin.x() - x + 1, y - selection.origin.y() + 1)
         elif x < selection.origin.x() and y < selection.origin.y():
-            selection.setGeometry(x, y, selection.origin.x() - x + 1, selection.origin.y() - y + 1)
+            selection.setGeometry(
+                x, y, selection.origin.x() - x + 1, selection.origin.y() - y + 1)
         elif x >= selection.origin.x() and y < selection.origin.y():
-            selection.setGeometry(selection.origin.x(), y, x - selection.origin.x() + 1, selection.origin.y() - y + 1)
+            selection.setGeometry(selection.origin.x(
+            ), y, x - selection.origin.x() + 1, selection.origin.y() - y + 1)
         else:
             selection.setGeometry(xorig, yorig, 1, 1)
 
@@ -788,7 +830,8 @@ class Canvas(QtWidgets.QLabel):
 
         self.signals.autoUpdateTool.emit(0)
         selection = Selection(QtCore.QPoint(0, 0), self.context, self)
-        selection.setGeometry(0, 0, self.image().image.width(), self.image().image.height())
+        selection.setGeometry(
+            0, 0, self.image().image.width(), self.image().image.height())
         selection.originTopLeft = QtCore.QPoint(0, 0)
         selection.image = QtGui.QImage(self.context.currentQImage())
         self.makeSelectionTransparent(self.context.transparentSelection)
