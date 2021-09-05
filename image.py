@@ -23,12 +23,12 @@ class Image:
 	@classmethod
 	def fromFile(cls, fileName, context):
 
-		image = QtGui.QImage(fileName).convertToFormat(QtGui.QImage.Format_ARGB32_Premultiplied)
+		image = QtGui.QImage(fileName[0]).convertToFormat(QtGui.QImage.Format_ARGB32_Premultiplied)
 
 		if image.hasAlphaChannel():
-			bgColor = QtWidgets.QColor(0,0,0,0)
+			bgColor = QtGui.QColor(0,0,0,0)
 		else:
-			bgColor = QtWidgets.QColor(255,255,255)
+			bgColor = QtGui.QColor(255,255,255)
 
 		return cls(fileName, image, bgColor, context)
 
@@ -50,7 +50,7 @@ class Image:
 		if self.posHistory != len(self.history)-1:
 			self.history = self.history[:self.posHistory+1]
 		self.history.append(QtGui.QImage(self.image))
-		
+
 		self.posHistory += 1
 		self.modified = True
 

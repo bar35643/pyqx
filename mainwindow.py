@@ -5,7 +5,8 @@ import os
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import Qt
-
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import names as Pixeler
 from mainwidget import MainWidget
 from palette import Palette
@@ -25,7 +26,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		self.resize(800,480)
 		self.setWindowTitle(self.context.getText("pyqx", "title"))
-		
+
 		self.statusBar = self.statusBar()
 		self.menuBar = self.createMenuBar()
 		self.toolBar = self.createToolBar()
@@ -43,8 +44,9 @@ class MainWindow(QtWidgets.QMainWindow):
 		self.signals.enterCanvas.connect(self.showImagePosition)
 		self.signals.leaveCanvas.connect(self.hideImagePosition)
 		self.signals.overCanvas.connect(self.setImagePosition)
-
 		self.show()
+
+
 
 	def createPopupMenu(self):
 
@@ -224,7 +226,7 @@ class MainWindow(QtWidgets.QMainWindow):
 		return l
 
 	def createMenuBar(self):
-		
+
 		menubar = self.menuBar()
 		fileMenu = menubar.addMenu(self.context.getText("menu", "file"))
 		editMenu = menubar.addMenu(self.context.getText("menu", "edit"))
@@ -255,7 +257,7 @@ class MainWindow(QtWidgets.QMainWindow):
 		return menubar
 
 	def createDockWidgets(self):
-		
+
 		# Palette widget
 		self.palette = QtWidgets.QDockWidget(self.context.getText("dock_widgets", "palette"), self)
 		self.palette.setAllowedAreas(Qt.RightDockWidgetArea)
@@ -273,9 +275,24 @@ class MainWindow(QtWidgets.QMainWindow):
 		self.addDockWidget(Qt.RightDockWidgetArea, self.toolProperties)
 		self.toolProperties.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
 
+		from QTGUI1 import Window_One
+		self.grid_widget = QtWidgets.QDockWidget()
+		self.grid_widget.setWidget(Window_One("ONE"))
+		self.addDockWidget(Qt.RightDockWidgetArea, self.grid_widget)
+
+
 		# Preview
 		self.preview = Preview(self.context.getText("dock_widgets", "preview"), self.context, self.signals, self)
 		self.addDockWidget(Qt.RightDockWidgetArea, self.preview)
+
+	def createButtonGroup(self, name):
+		groupBox = QGroupBox()
+		vbox = QVBoxLayout()
+		vbox.addStretch(1)
+		button = QPushButton(name, self)
+		vbox.addWidget(button)
+		groupBox.setLayout(vbox)
+		return groupBox
 
 	def restoreFocus(self):
 
@@ -307,7 +324,7 @@ class MainWindow(QtWidgets.QMainWindow):
 		d = NewFileDialog(self.context, self)
 
 	def openFile(self):
-		
+
 		fileName = QtWidgets.QFileDialog.getOpenFileName(self,
 					self.context.getText("dialog_open", "title"),
 					"/home",
@@ -319,15 +336,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		if self.context.currentImage().fileName == "":
 			self.saveFileAs()
-		else:	
+		else:
 			self.context.currentImage().save()
 
 	def saveFileAs(self):
 
 		d = QtWidgets.QFileDialog()
 		fileName, filterName = d.getSaveFileName(self,
-					self.context.getText("dialog_save", "title"), 
-					"", 
+					self.context.getText("dialog_save", "title"),
+					"",
 					"*.bmp;;*.gif;;*.png;;*.xpm;;*.jpg")
 
 		if fileName.split(".")[-1] in ["bmp", "gif", "png", "xpm", "jpg"]:
@@ -545,7 +562,7 @@ class MainWindow(QtWidgets.QMainWindow):
 			if reply == QtWidgets.QMessageBox.Discard:
 				event.accept()
 			elif reply == QtWidgets.QMessageBox.Cancel:
-				event.ignore()  
+				event.ignore()
 				return
 			elif reply == QtWidgets.QMessageBox.SaveAll:
 				for i in l:
@@ -555,7 +572,7 @@ class MainWindow(QtWidgets.QMainWindow):
 				event.accept()
 				return
 
-			
+
 
 		self.context.saveDefaults()
 

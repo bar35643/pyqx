@@ -55,7 +55,7 @@ class CurrentColor(QtWidgets.QLabel):
 		else:
 			self.color = self.context.secondaryColor
 			self.setStyleSheet("background-color: " + self.color.name() + ";")
-		
+
 		super(CurrentColor, self).update()
 
 
@@ -142,7 +142,7 @@ class Palette (QtWidgets.QWidget):
 		self.setObjectName("Palette")
 
 		palette = QtWidgets.QGridLayout()
-		for i in range(5):
+		for i in range(3):
 			for j in range(12):
 				palette.addWidget(Color(i*12+j, self.context.palette[i*12+j], self.context, self.signals), i, j)
 				"""
