@@ -14,6 +14,7 @@ from toolproperties import ToolProperties
 from preview import Preview
 from dialogs import NewFileDialog, ResizeImageDialog, ResizeCanvasDialog, Preferences
 
+from grid_layer import Grid_Layer
 
 class MainWindow(QtWidgets.QMainWindow):
 
@@ -275,9 +276,8 @@ class MainWindow(QtWidgets.QMainWindow):
 		self.addDockWidget(Qt.RightDockWidgetArea, self.toolProperties)
 		self.toolProperties.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
 
-		from QTGUI1 import Window_One
 		self.grid_widget = QtWidgets.QDockWidget()
-		self.grid_widget.setWidget(Window_One("ONE"))
+		self.grid_widget.setWidget(Grid_Layer("ONE"))
 		self.addDockWidget(Qt.RightDockWidgetArea, self.grid_widget)
 
 
@@ -363,7 +363,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		if self.context.currentImage().posHistory > 0:
 			self.context.currentImage().posHistory -= 1
-			self.context.currentImage().image = QtWidgets.QImage(self.context.currentImage().history[self.context.currentImage().posHistory])
+			self.context.currentImage().image = QtGui.QImage(self.context.currentImage().history[self.context.currentImage().posHistory])
 			self.signals.updateCanvas.emit()
 			self.signals.resizeCanvas.emit()
 
@@ -371,7 +371,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		if self.context.currentImage().posHistory < len(self.context.currentImage().history)-1:
 			self.context.currentImage().posHistory += 1
-			self.context.currentImage().image = QtWidgets.QImage(self.context.currentImage().history[self.context.currentImage().posHistory])
+			self.context.currentImage().image = QtGui.QImage(self.context.currentImage().history[self.context.currentImage().posHistory])
 			self.signals.updateCanvas.emit()
 			self.signals.resizeCanvas.emit()
 
@@ -419,24 +419,24 @@ class MainWindow(QtWidgets.QMainWindow):
 		self.context.setDefault("grid", "matrix_grid", self.context.matrixGrid)
 
 	def flipHorizontally(self):
-
-		pass
+		image = self.context.currentImage().image
+		self.context.currentImage().image = image.transformed(QtGui.QTransform().rotate(180.0)).mirrored()
 
 	def flipVertically(self):
-
-		pass
+		image = self.context.currentImage().image
+		self.context.currentImage().image = image.mirrored()
 
 	def rotate90CW(self):
-
-		pass
+		image = self.context.currentImage().image
+		self.context.currentImage().image = image.transformed(QtGui.QTransform().rotate(90.0))
 
 	def rotate90CCW(self):
-
-		pass
+		image = self.context.currentImage().image
+		self.context.currentImage().image = image.transformed(QtGui.QTransform().rotate(270.0))
 
 	def rotate180(self):
-
-		pass
+		image = self.context.currentImage().image
+		self.context.currentImage().image = image.transformed(QtGui.QTransform().rotate(180.0))
 
 	def showResizeImageDialog(self):
 

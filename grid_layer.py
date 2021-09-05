@@ -29,9 +29,9 @@ from FloatSlider import FloatSlider
 "Window for the Config part"
 "Grid Like Abstract-Functions"
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
-class Window_One(QtWidgets.QWidget):
+class Grid_Layer(QtWidgets.QWidget):
     def __init__(self,threadHandler):
-        super(Window_One, self).__init__()
+        super(Grid_Layer, self).__init__()
         self.threadHandler = threadHandler
         self.value0 = 0
         self.value1 = 0
@@ -42,13 +42,13 @@ class Window_One(QtWidgets.QWidget):
 
         grid = QGridLayout(self)
         grid.addWidget(self.createSliderGroup("Raumgröße in m^2", self.changeValue0, 20, 1000, 100), 0, 0)
-        grid.addWidget(self.createSliderGroup("Faktor in %", self.changeValue1, 1, 100, 10), 0, 1)
+        grid.addWidget(self.createSliderGroup("Faktor in %", self.changeValue1, 1, 100, 10), 1, 0)
 
-        grid.addWidget(self.createTimerGroup("Öffnungszeit", self.changeTime0, 0, 24), 1, 0)
-        grid.addWidget(self.createTimerGroup("Schließungszeit", self.changeTime1, 0, 24), 1, 1)
+        grid.addWidget(self.createTimerGroup("Öffnungszeit", self.changeTime0, 0, 24), 2, 0)
+        grid.addWidget(self.createTimerGroup("Schließungszeit", self.changeTime1, 0, 24), 3, 0)
 
-        grid.addWidget(self.createButtonGroup("Änderungen Übernehmen", self.onClick1), 2, 0)
-        grid.addWidget(self.createButtonGroup("Exit", self.onClick2), 2, 1)
+        grid.addWidget(self.createButtonGroup("Änderungen Übernehmen", self.onClick1), 4, 0)
+        grid.addWidget(self.createButtonGroup("Exit", self.onClick2), 5, 0)
 
         self.setLayout(grid)
 

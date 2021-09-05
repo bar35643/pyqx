@@ -19,7 +19,7 @@ class Language:
 class TDatabase:
 
 	def __init__(self):
-		
+
 		self.d = {}
 		self.langAvailable = []
 
