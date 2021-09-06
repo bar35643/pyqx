@@ -97,6 +97,15 @@ class MainWindow(QtWidgets.QMainWindow):
         a.triggered.connect(self.zoomOut)
         l.append(a)
 
+        #TEST #####
+        a = QtWidgets.QAction(QtGui.QIcon(os.path.join(
+            "themes", self.context.theme, "zoomout.png")), "TEST", self.tools)
+        a.setShortcut("Ctrl+1")
+        a.triggered.connect(self.test)
+        l.append(a)
+        #TEST #####
+
+
         l[self.context.currentTool].setChecked(True)
 
         return l
@@ -364,10 +373,16 @@ class MainWindow(QtWidgets.QMainWindow):
             self.signals.zoom.emit()
 
     def zoomOut(self):
-
         if self.context.currentImage().zoom > 1:
             self.context.currentImage().zoom -= 1
             self.signals.zoom.emit()
+
+    def test(self):
+        filename = []
+        self.mainWidget.closeTab(0)
+        filename.append('C:/Users/bar35643/Desktop/test2.png')
+        filename.append('Images (*.bmp *.gif *.png *.xpm *.jpg)')
+        self.context.loadImage(filename)
 
     def newFile(self):
 
@@ -380,6 +395,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                              "dialog_open", "title"),
                                                          "/home",
                                                          self.context.getText("dialog_open", "images") + u" (*.bmp *.gif *.png *.xpm *.jpg);;" + self.context.getText("dialog_open", "all_files") + u" (*)")
+        print(fileName)
         if fileName:
             self.context.loadImage(fileName)
 
@@ -398,9 +414,8 @@ class MainWindow(QtWidgets.QMainWindow):
                                                      "dialog_save", "title"),
                                                  "",
                                                  "*.bmp;;*.gif;;*.png;;*.xpm;;*.jpg")
-
         if fileName.split(".")[-1] in ["bmp", "gif", "png", "xpm", "jpg"]:
-            self.context.currentImage().fileName = fileName
+            self.context.currentImage().fileName = [fileName, filterName[1:]]
             self.signals.fileNameChanged.emit(
                 self.context.getCurrentImagePos(), os.path.basename(str(fileName)))
         else:

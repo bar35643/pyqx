@@ -30,6 +30,7 @@ class Image:
 
         image = QtGui.QImage(fileName[0]).convertToFormat(
             QtGui.QImage.Format_ARGB32_Premultiplied)
+        """
         global img0
         img0 = QtGui.QImage(fileName[0]).convertToFormat(
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -43,7 +44,7 @@ class Image:
         ptr.setsize(height * width * 4)
         global arr
         arr = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
-
+        """
         if image.hasAlphaChannel():
             bgColor = QtGui.QColor(0, 0, 0, 0)
         else:
@@ -52,7 +53,7 @@ class Image:
         return cls(fileName, image, bgColor, context)
 
     @classmethod
-    def newImage(self, cls, w, h, bg, context):
+    def newImage(cls, w, h, bg, context):
 
         image = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
         image.fill(bg)
@@ -60,6 +61,7 @@ class Image:
         return cls("", image, bg, context)
 
     def save(self):
+        """
         # Create Numpy Array
         np.set_printoptions(threshold=sys.maxsize)
         incomingImage = self.image.convertToFormat(
@@ -79,6 +81,8 @@ class Image:
         img0.save(self.fileName[0].split(".")[0] + "_original" + ".png")
         self.image.save(self.fileName[0].split(".")[0] + "_new" + ".png")
         qim.save(self.fileName[0].split(".")[0] + "_diff" + ".png")
+        """
+        self.image.save(self.fileName[0])
         self.modified = False
 
     def addHistoryStep(self):

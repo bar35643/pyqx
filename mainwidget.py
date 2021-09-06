@@ -49,7 +49,7 @@ class MainWidget(QtWidgets.QTabWidget):
         self.context.setCurrentImagePos(self.count() - 1)
 
     def closeTab(self, index):
-
+        print("Closing Tab")
         print(index)
         if self.context.getImagePos(index).modified:
             if self.confirmExit(index):
