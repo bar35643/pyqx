@@ -97,6 +97,7 @@ class MainWindow(QtWidgets.QMainWindow):
         a.triggered.connect(self.zoomOut)
         l.append(a)
 
+        #TODO
         #TEST #####
         a = QtWidgets.QAction(QtGui.QIcon(os.path.join(
             "themes", self.context.theme, "zoomout.png")), "TEST", self.tools)
@@ -378,8 +379,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.signals.zoom.emit()
 
     def test(self):
+        #TODO
+        self.saveFile()
+        self.mainWidget.closeTab(self.context.getCurrentImagePos())
+
         filename = []
-        self.mainWidget.closeTab(0)
         filename.append('C:/Users/bar35643/Desktop/test2.png')
         filename.append('Images (*.bmp *.gif *.png *.xpm *.jpg)')
         self.context.loadImage(filename)
@@ -391,11 +395,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def openFile(self):
 
         fileName = QtWidgets.QFileDialog.getOpenFileName(self,
-                                                         self.context.getText(
-                                                             "dialog_open", "title"),
-                                                         "/home",
-                                                         self.context.getText("dialog_open", "images") + u" (*.bmp *.gif *.png *.xpm *.jpg);;" + self.context.getText("dialog_open", "all_files") + u" (*)")
-        print(fileName)
+                                                         self.context.getText("dialog_open", "title"),
+                                                         "",
+                                                         self.context.getText("dialog_open", "images") + u" (*.bmp *.gif *.png *.xpm *.jpg);;" +
+                                                         self.context.getText("dialog_open", "all_files") + u" (*)")
         if fileName:
             self.context.loadImage(fileName)
 
